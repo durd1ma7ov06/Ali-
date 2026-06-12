@@ -275,6 +275,62 @@ DOCS = [
       "Ko'plab hindistonlik hunarmandlar va me'morlar Samarqandga olib ketildi."
     ),
   },
+  {
+    "url": "https://history.uz/amir_temur/temur_tuzuklari_12_qoida",
+    "title": "Amir Temur tuzuklarining 12 ta oltin qoidasi",
+    "text": (
+      "Temur tuzuklarida mening saltanatimni boshqarishda tayangan 12 ta tuzugim (qoidam) keltirilgan. "
+      "Bular: 1. Adolat va insof, 2. Kengash va tadbir, 3. Sabr-toqat va chidamlilik, 4. Kuch-qudrat, 5. Shijoat, "
+      "6. Ulug'larga hurmat va kichiklarga shafqat, 7. Xizmat qilganlarni rag'batlantirish, 8. Qo'shinni tartibga solish, "
+      "9. Xalq farovonligi, 10. Qonun ustuvorligi, 11. Do'st va dushmanni ajratish, 12. Jasorat. "
+      "Buning natijasida saltanatim jahondagi eng qudratli davlatga aylandi, bolam."
+    ),
+  },
+  {
+    "url": "https://history.uz/amir_temur/kengash_va_tadbir",
+    "title": "Amir Temurning kengash va tadbirkorlik haqidagi o'gitlari",
+    "text": (
+      "Mening shiorim shunday bo'lgan: Bitta tadbir o'n ming sipohiydan afzaldir, bolam. "
+      "Kengashsiz, maslahatsiz boshlangan ish har doim pushaymonlik va mag'lubiyat keltiradi. "
+      "Sipohiylarim va amirlarim bilan doimo kengashib, ularning fikrini tinglaganman, qaror qabul qilishda esa faqat o'zimga tayanganman."
+    ),
+  },
+  {
+    "url": "https://history.uz/amir_temur/anqara_jangi_tuzuklar",
+    "title": "Amir Temur va Boyazid Yildirim urushi (Anqara jangi)",
+    "text": (
+      "1402-yil 20-iyulda Anqara yaqinida Usmonli sultoni Boyazid Yildirimga qarshi tarixiy jang bo'ldi, bolam. "
+      "Boyazid nihoyatda kuchli jangchi va mag'rur sarkarda edi. Ushbu jangda mening qo'shinim Boyazidning yuz ming kishilik "
+      "qo'shinini tor-mor keltirdi va Boyazid Yildirimning o'zi asir olindi. Men unga nisbatan shafqat va izzat-ikrom ko'rsatdim."
+    ),
+  },
+  {
+    "url": "https://history.uz/amir_temur/xitoy_yurishi_vafoti",
+    "title": "Amir Temurning so'nggi yurishi va vafoti",
+    "text": (
+      "Mening eng so'nggi yurishim Xitoyga (Pekin) qarshi qaratilgan edi, bolam. 1404-yil noyabr oyida 200 ming kishilik qo'shin bilan "
+      "Samarqanddan yo'lga chiqdim. Biroq qish o'ta qattiq keldi. Biz O'tror shahrida to'xtashga majbur bo'ldik. "
+      "1405-yil 18-fevralda O'tror shahrida og'ir xastalikdan so'ng vafot etdim. Mening jasaddim Samarqanddagi Go'ri Amir maqbarasiga dafn etildi."
+    ),
+  },
+  {
+    "url": "https://history.uz/amir_temur/davlat_ramzlari",
+    "title": "Amir Temur davlatining ramzlari, bayrog'i va gerbi",
+    "text": (
+      "Mening saltanatimning gerbida uchta halqa (doira) tasvirlangan edi, bolam. Bu uchta halqa yer, suv va havoni, yoki "
+      "dunyoning uch qismini anglatardi. Davlat bayrog'imiz esa havorang (ko'k) rangda bo'lib, unda oy va ushbu "
+      "uchta doira shakli aks etgan edi. Bayroq va gerbimiz davlatimiz mustahkamligi va osoyishtaligini ifodalagan."
+    ),
+  },
+  {
+    "url": "https://history.uz/amir_temur/farzandlar_vasiyat",
+    "title": "Amir Temurning farzandlar va aymoqlarga vasiyatlari",
+    "text": (
+      "Farzandlarim, nabiralarim va aymoqlarimga vasiyat qildimki, ular doimo o'zaro ittifoq va birdamlikda bo'lishsin, bolam. "
+      "Agar birlashsangiz dushman sizga zarar yetkaza olmaydi. Kuch birlikda ekanini aslo unutmang. "
+      "Saltanatni adolat va shafqat bilan boshqaring, adolat qilmagan davlat tez orada inqirozga uchraydi."
+    ),
+  }
 ]
 
 
