@@ -1,0 +1,84 @@
+╔══════════════════════════════════════════════════════════════╗
+║          ALI ROBOT - TEZKOR ISHGA TUSHIRISH                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+📋 TERMINAL BUYRUQLARI (PowerShell yoki CMD):
+
+┌──────────────────────────────────────────────────────────────┐
+│ 1. BIRINCHI MARTA (Kutubxonalarni o'rnatish)                │
+└──────────────────────────────────────────────────────────────┘
+
+cd "c:\Users\Windows_11\Desktop\humanoid ali\humanoid robot"
+.\INSTALL_DEPENDENCIES.bat
+
+⏱ Bu 5-10 daqiqa davom etadi. Kutib turing!
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ 2. HARDWARE TEST (Ixtiyoriy, lekin tavsiya etiladi)         │
+└──────────────────────────────────────────────────────────────┘
+
+python TEST_HARDWARE.py
+
+✓ Barcha qurilmalar ishlayotganini tekshiradi
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ 3. ROBOTNI ISHGA TUSHIRISH                                   │
+└──────────────────────────────────────────────────────────────┘
+
+.\START_ROBOT.ps1
+
+yoki
+
+START_ROBOT.bat
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ 4. TO'XTATISH                                                │
+└──────────────────────────────────────────────────────────────┘
+
+Ctrl+C
+
+
+╔══════════════════════════════════════════════════════════════╗
+║                    QISQA VARIANT                             ║
+╚══════════════════════════════════════════════════════════════╝
+
+Agar kutubxonalar o'rnatilgan bo'lsa:
+
+cd "c:\Users\Windows_11\Desktop\humanoid ali\humanoid robot"
+.\START_ROBOT.ps1
+
+
+╔══════════════════════════════════════════════════════════════╗
+║                 MUAMMOLAR BO'LSA                             ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. ISHGA_TUSHIRISH.md ni o'qing (to'liq qo'llanma)
+2. TEST_HARDWARE.py ni ishga tushiring
+3. .env faylini tekshiring
+4. ESP32 ulanganini tekshiring (COM12)
+
+
+╔══════════════════════════════════════════════════════════════╗
+║              HOZIRGI SOZLAMALAR                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+✓ ESP32 Port: COM12 (CH340)
+✓ Kamera: A4ech FHD 1080P PC Camera
+✓ Yuz Bazasi: 12 odam, 30 embedding
+✓ AI Provider: Google AI Studio (Gemini)
+
+
+╔══════════════════════════════════════════════════════════════╗
+║                   TAYYOR!                                    ║
+╚══════════════════════════════════════════════════════════════╝
+
+Robot ishga tushgandan keyin:
+- Mikrofondan gapiring
+- "salom", "yordam", "qo'l ko'tar" kabi buyruqlar bering
+- Universitet haqida savol bering
+- "stop" yoki "toxtat" deb to'xtating
+
+Omad! 🤖✨

@@ -1,0 +1,25 @@
+# Amir Temur knowledge base configuration
+# Ushbu fayl faqat seed skriptidan keyin indeksni qayta qurishda ishlatiladi.
+
+# Manbalar (endi lokal seed orqali kiritiladi, crawler ishlatilmaydi)
+start_urls: []
+allowed_domains: []
+exclude_patterns: []
+exclude_extensions: []
+max_pages: 0
+request_delay_seconds: 0.3
+timeout_seconds: 15
+user_agent: "AmirTemurKnowledgeBot/1.0"
+min_text_chars: 80
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 2 — Text cleaning, chunking and search index
+# ─────────────────────────────────────────────────────────────────────────────
+indexing:
+  chunk_size_chars: 900
+  chunk_overlap_chars: 150
+  min_chunk_chars: 120
+  top_k_default: 5
+  backend_preference: embedding
+  embedding_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  embedding_batch_size: 32

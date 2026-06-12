@@ -1,0 +1,13 @@
+person_id,fio,display_name,photo_dir,created_at,updated_at,photo_count
+jumaboyev_farrux_madaminovich,Jumaboyev Farrux Madaminovich,Farrux Madaminovich,face_data\photos\jumaboyev_farrux_madaminovich,2026-05-25T10:13:42,2026-05-25T10:14:56,1
+matyakubov_nurbek_rayimberganovich,Matyakubov Nurbek Rayimberganovich,Nurbek Rayimberganovich,face_data\photos\matyakubov_nurbek_rayimberganovich,2026-05-25T10:15:39,2026-05-25T10:15:39,1
+yusupov_davronbek_firnafasovich,Yusupov Davronbek Firnafasovich,Davronbek Firnafasovich,face_data\photos\yusupov_davronbek_firnafasovich,2026-05-25T10:16:02,2026-05-25T10:16:02,1
+ismoilov_shukurulloh_habibulloyevich,Ismoilov Shukurulloh Habibulloyevich,Shukurulloh Habibulloyevich,face_data\photos\ismoilov_shukurulloh_habibulloyevich,2026-05-25T10:16:47,2026-05-25T10:16:47,1
+matsapayev_gayratbek_jumanyazovich,Matsapayev G‘ayratbek Jumanyazovich,G‘ayratbek Jumanyazovich,face_data\photos\matsapayev_gayratbek_jumanyazovich,2026-05-25T10:17:19,2026-05-25T10:17:19,1
+matnazarov_anvar_rustamovich,Matnazarov Anvar Rustamovich,Anvar Rustamovich,face_data\photos\matnazarov_anvar_rustamovich,2026-05-25T10:18:05,2026-05-25T10:18:05,1
+zaripboyev_ollabergan_zokirbek_ogli,Zaripboyev Ollabergan Zokirbek o'g'li,Zaripboyev Ollabergan,face_data\photos\zaripboyev_ollabergan_zokirbek_ogli,2026-05-25T10:25:43,2026-05-25T10:25:43,1
+ikromov_seymonbek,Ikromov Seymonbek,Ikromov Seymonbek,face_data\photos\ikromov_seymonbek,2026-05-25T11:19:30,2026-05-25T11:37:06,5
+zaripboyev_ollabergan,Zaripboyev Ollabergan,Zaripboyev Ollabergan,face_data\photos\zaripboyev_ollabergan,2026-05-25T11:31:35,2026-05-25T11:31:35,10
+ganijonova_nafisa,G'anijonova Nafisa,G'anijonova Nafisa,face_data\photos\ganijonova_nafisa,2026-05-25T11:34:22,2026-05-25T11:34:22,8
+test_person,Test Person,Tester,face_data\photos\test_person,2026-05-31T11:43:00,2026-05-31T11:43:14,1
+another_person,Another Person,Another,face_data\photos\another_person,2026-05-31T11:43:01,2026-05-31T11:43:01,1

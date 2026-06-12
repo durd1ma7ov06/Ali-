@@ -1,0 +1,318 @@
+=================================================================
+ESP32 HUMANOID SERVO CONTROLLER - TEST KOMANDALAR
+=================================================================
+
+Bu faylda ESP32 ni test qilish uchun tayyor komandalar bor.
+Serial Monitor ga nusxa ko'chirib paste qiling (115200 baud).
+
+=================================================================
+1. ASOSIY TEST - Hamma narsa ishlayaptimi?
+=================================================================
+
+HELP
+STATUS
+HOME
+
+Kutilgan javob:
+- HELP:BEGIN ... HELP:END
+- STATUS:BEGIN ... STATUS:END  
+- OK:HOME
+
+
+=================================================================
+2. BOSH HARAKATI TEST
+=================================================================
+
+HEAD:0
+HEAD:45
+HEAD:90
+HEAD:135
+HEAD:180
+HEAD:90
+HOME
+
+Kutilgan:
+- Bosh 0° ga boradi (eng chap)
+- 45°, 90° (o'rta), 135°, 180° (eng o'ng)
+- 90° ga qaytadi
+- Home pozitsiyaga (90°)
+
+
+=================================================================
+3. O'NG QO'L TEST
+=================================================================
+
+# O'ng yelkani ko'tarish
+ARMS:45,0,0,0,0,0
+
+# O'ng tirsagini bukish  
+ARMS:0,45,0,0,0,0
+
+# O'ng bilakni burish
+ARMS:0,0,45,0,0,0
+
+# To'liq o'ng qo'l
+ARMS:30,45,30,0,0,0
+
+# Home
+HOME
+
+
+=================================================================
+4. CHAP QO'L TEST
+=================================================================
+
+# Chap yelkani ko'tarish
+ARMS:0,0,0,45,0,0
+
+# Chap tirsagini bukish
+ARMS:0,0,0,0,45,0
+
+# Chap bilakni burish  
+ARMS:0,0,0,0,0,45
+
+# To'liq chap qo'l
+ARMS:0,0,0,30,45,30
+
+# Home
+HOME
+
+
+=================================================================
+5. IKKI QO'L TEST (SALOM BERISH)
+=================================================================
+
+# Ikki yelkani ko'tarish
+ARMS:45,0,0,45,0,0
+
+# Tirsaklarni bukish
+ARMS:45,60,0,45,60,0
+
+# Bilaklarni silkitish
+ARMS:45,60,30,45,60,30
+ARMS:45,60,-30,45,60,-30
+ARMS:45,60,30,45,60,30
+ARMS:45,60,-30,45,60,-30
+
+# Pastga tushirish
+ARMS:0,0,0,0,0,0
+
+# Home
+HOME
+
+
+=================================================================
+6. WELCOME GESTURE (Xush kelibsiz)
+=================================================================
+
+# Boshni burib salom
+HEAD:45
+ARMS:60,45,30,0,0,0
+HEAD:135
+ARMS:0,0,0,60,45,30
+HEAD:90
+
+# Home
+HOME
+
+
+=================================================================
+7. POINTING GESTURE (Ko'rsatish)
+=================================================================
+
+# O'ng qo'l bilan ko'rsatish
+HEAD:135
+ARMS:0,0,60,0,0,0
+
+# Chap qo'l bilan ko'rsatish  
+HEAD:45
+ARMS:0,0,0,0,0,60
+
+# Home
+HEAD:90
+HOME
+
+
+=================================================================
+8. SMOOTH MOVEMENT TEST
+=================================================================
+
+# Smooth yoqiq (default)
+STATUS
+SMOOTH:ON
+HEAD:0
+HEAD:180
+HEAD:90
+
+# Smooth o'chirilgan
+SMOOTH:OFF
+HEAD:0
+HEAD:180
+HEAD:90
+
+# Smooth qayta yoqish
+SMOOTH:ON
+HOME
+
+
+=================================================================
+9. BITTA SERVO TEST (SET komandasi)
+=================================================================
+
+# Servo 0 (Bosh)
+SET:0:45
+SET:0:135
+SET:0:90
+
+# Servo 1 (O'ng yelka)
+SET:1:30
+SET:1:90
+
+# Servo 4 (Chap yelka)  
+SET:4:30
+SET:4:90
+
+# Home
+HOME
+
+
+=================================================================
+10. KALIBRLASH TEST
+=================================================================
+
+# Agar servo 90° da to'g'ri turmaydigan bo'lsa:
+
+# Boshni kalibrlash (masalan 95° neutral)
+CALIBRATE:0:95
+
+# O'ng yelkani kalibrlash
+CALIBRATE:1:88
+
+# Tekshirish
+STATUS
+
+# Home (yangi neutral qiymatlar bilan)
+HOME
+
+
+=================================================================
+11. ERROR HANDLING TEST
+=================================================================
+
+# Noto'g'ri komandalar
+INVALID_COMMAND
+HEAD:
+HEAD:ABC
+SET:99:90
+ARMS:1,2,3
+
+Kutilgan javoblar:
+- ERROR:Unknown command
+- ERROR:HEAD:Invalid angle  
+- ERROR:SET:Invalid servo ID
+- ERROR:ARMS:Invalid format
+
+
+=================================================================
+12. TO'LIQ DEMO SEQUENCE
+=================================================================
+
+# 1. Tayyor ekanligini tekshirish
+HELP
+STATUS
+
+# 2. Home dan boshlash
+HOME
+
+# 3. Bosh harakati
+HEAD:45
+HEAD:135
+HEAD:90
+
+# 4. Salom berish
+ARMS:45,60,0,45,60,0
+
+# 5. Qo'llarni silkitish
+ARMS:45,60,30,45,60,-30
+ARMS:45,60,-30,45,60,30
+ARMS:45,60,30,45,60,-30
+
+# 6. Welcome
+ARMS:60,45,30,60,45,30
+
+# 7. Pointing
+HEAD:135
+ARMS:0,0,60,0,0,0
+HEAD:45
+ARMS:0,0,0,0,0,60
+
+# 8. Tugash
+HEAD:90
+HOME
+
+# 9. Status
+STATUS
+
+
+=================================================================
+SERIAL MONITOR SOZLAMALARI
+=================================================================
+
+Arduino IDE Serial Monitor:
+- Baud rate: 115200
+- Line ending: Newline (yoki Both NL & CR)
+
+Putty:
+- Speed: 115200
+- Connection type: Serial
+- Implicit CR in every LF: Yes
+
+Python (Serial Monitor):
+- import serial
+- ser = serial.Serial('COM3', 115200)
+- ser.write(b'HEAD:90\n')
+- print(ser.readline())
+
+
+=================================================================
+TROUBLESHOOTING
+=================================================================
+
+Agar komandalar ishlamasa:
+
+1. ✅ ESP32 tayyor signal berganmi?
+   Kutiladi: "ESP32_HUMANOID_SERVO_READY"
+
+2. ✅ Baud rate to'g'rimi?
+   115200 bo'lishi kerak
+
+3. ✅ Line ending to'g'rimi?
+   Newline (\n) yoki Both NL & CR
+
+4. ✅ Port to'g'ri ochilganmi?
+   Device Manager da COM port ko'rish
+
+5. ✅ Servolarga power berilganmi?
+   5V, 3A external adapter
+
+6. ✅ Ground umumiyligini?
+   ESP32 GND = Power Supply GND
+
+
+=================================================================
+QISQA YORDAM
+=================================================================
+
+HEAD:<0-180>              Boshni burish
+ARMS:<6 ta offset>        Qo'llarni boshqarish  
+SET:<id>:<angle>          Bitta servo
+HOME                      Neutral pozitsiya
+STATUS                    Hozirgi holat
+SMOOTH:<ON|OFF>           Yumshoq harakat
+CALIBRATE:<id>:<angle>    Kalibrlash
+HELP                      Yordam
+
+
+=================================================================
+MUALLIF: Humanoid ALI Team | 2026
+=================================================================

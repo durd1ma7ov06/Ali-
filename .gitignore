@@ -1,0 +1,47 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+venv312/
+env/
+ENV/
+
+# Local secrets and machine-specific config
+.env
+.env.*
+!.env.example
+deepseek
+
+# Build and packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test and tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE and OS files
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# # Face dataset (local data, not for version control)
+# face_data/
+# faces.db
+
+# # University knowledge — local crawl artefacts (sources.yaml is tracked)
+# university_knowledge/raw_pages.jsonl
+# university_knowledge/knowledge.sqlite
+# university_knowledge/vector_index/
+# university_knowledge/chunks.jsonl

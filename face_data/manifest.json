@@ -1,0 +1,325 @@
+{
+  "schema_version": "1.0",
+  "total_people": 12,
+  "total_photos": 32,
+  "last_updated_at": "2026-05-31T11:43:14",
+  "photo_hashes": {
+    "jumaboyev_farrux_madaminovich": [
+      "ef4ba3a9d02dbf96b14dde89500859200f3e190fe278b66a5898fc32188abc53"
+    ],
+    "matyakubov_nurbek_rayimberganovich": [
+      "8d65395c49c4593d6cb8c80b2f45a2bc437dce7ec4c31f48e737df826c141e6c"
+    ],
+    "yusupov_davronbek_firnafasovich": [
+      "8822aa5960b493ec9e2bf23c6ef576b9001eb0231756015bd071ba9bff084ee5"
+    ],
+    "ismoilov_shukurulloh_habibulloyevich": [
+      "9abc70ddbaf712a70adbe24551dae245cb7ff6ff08d4b9a70debceaa26614fd6"
+    ],
+    "matsapayev_gayratbek_jumanyazovich": [
+      "d8fdf6a18899c0a0853efe9cd384c5e297a8d000ec119363ce6ebffd66c10a7e"
+    ],
+    "matnazarov_anvar_rustamovich": [
+      "a3ebf6d421afd7fb49b1fa1e3c5b2b18880c2ca05c03a67513933b650fa4cd69"
+    ],
+    "zaripboyev_ollabergan_zokirbek_ogli": [
+      "231b441728f22e04148cd214f4ac7eff6f56ce020049dbfe6b32ee04d52cc82d"
+    ],
+    "ikromov_seymonbek": [
+      "bca296e5d9c1aa0a3dc8366188dd779fec0f40d5c5ac4fba6b5a468caabf059d",
+      "b852eb42464dccc902440af85cf6a4f6ebef5079e69a488f4a11898034b98e11",
+      "576514c47bb06f854506019dae5d41ad7cc357739ec31754800fbf599be0f9f3",
+      "e3af29ba5ad267eadf385b30d332e00ad7ca1882c1f1fa801a08d0a916826071",
+      "171faecb0e9f5671b4515b58bbc1932f6a79e65db8de9a7a9adb6fd97a330d96"
+    ],
+    "zaripboyev_ollabergan": [
+      "8b1ba87fb1cba73397f825cf55a6e8f5e28cc01f4a8ea1a0555caec4146b80cc",
+      "417a13cdef1b04ec9f32edc98243b1f29a28f5e320c6773daf3d4b890fbe347a",
+      "b575be18d61fb77f60fd8b7c09d68f9c0b867c70e0fc49a7874eaa5aa1d1f89a",
+      "041975a9879beda56800f1b17bd4cb4d644290496e3436ed9c6b75400e85ef32",
+      "cc66258819a1233159a12372891b6f23243c579281d1a74d74b80c2ed6fbafa3",
+      "1166065107f592df288a94a654014c5b561c421e9929611b1bd93b1661f029b5",
+      "2490c58a745e18a3df541ca0dfafbf5664db887dc71851d43d55d5c9e7791633",
+      "0db8fef2ff51d223d97c7e182aa2b359ae14334105041858cfc9a51bacb5e77f",
+      "fb6f1191149c17942fa735597c192937baa54c08c9cd17e085134a92fc522061",
+      "1600728de83ac0088141ee28c7408c43eb73364c6940160a71dcf63d8f3ea072"
+    ],
+    "ganijonova_nafisa": [
+      "f953566f7afcb005d774852e9f9514b01a3804ede92b2fcc73d589fb9c11b4d2",
+      "269b288de03df0e563ff5d6e4b07ac4c67015980e04f7b1624f477ff381952f0",
+      "0d53ab3ae60d5152654e1f79062f81c6084e4a5db4e25b132ec0658a15d89fd0",
+      "315ff1ec4192a79ba5aacabac123aaf7a20fb7125ff8bb09eedac05e077b64c6",
+      "9d082291ea372d565921d40cbbee9161367901aaedbb03becad207483bf08b77",
+      "b027a1e854532bbc2cc5da13f4fa586e5ff9332256bac0319f59563d20e89e51",
+      "5fa7d8f3263e30a93659a0267ebf999705939ea087d9a3874b28d916de8fe741",
+      "1780d4ba94ed34020cc2928779587bd635623271a7b174b3546222d551f26af2"
+    ],
+    "test_person": [
+      "9dacf9b93ef343cb1b10d45dcd84959c4448a68d0859d818cc3decfb7dbf619f"
+    ],
+    "another_person": [
+      "02d3446ba5843c5fbd7c528161b0932190db1b5c34d9bb66000e3cd097b55682"
+    ]
+  },
+  "history": [
+    {
+      "timestamp": "2026-05-25T10:05:15",
+      "action": "add_person",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:05:15",
+      "action": "skip_duplicate_photo",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [],
+      "files_skipped": [
+        "photo_a.jpg"
+      ]
+    },
+    {
+      "timestamp": "2026-05-25T10:05:15",
+      "action": "skip_duplicate_photo",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [],
+      "files_skipped": [
+        "photo_b.jpg"
+      ]
+    },
+    {
+      "timestamp": "2026-05-25T10:05:15",
+      "action": "add_person",
+      "person_id": "another_person",
+      "fio": "Another Person",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:06:26",
+      "action": "add_person",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:06:26",
+      "action": "skip_duplicate_photo",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [],
+      "files_skipped": [
+        "photo_a.jpg"
+      ]
+    },
+    {
+      "timestamp": "2026-05-25T10:06:26",
+      "action": "skip_duplicate_photo",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [],
+      "files_skipped": [
+        "photo_b.jpg"
+      ]
+    },
+    {
+      "timestamp": "2026-05-25T10:06:26",
+      "action": "add_person",
+      "person_id": "another_person",
+      "fio": "Another Person",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:14:57",
+      "action": "add_photos",
+      "person_id": "jumaboyev_farrux_madaminovich",
+      "fio": "Jumaboyev Farrux Madaminovich",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:15:39",
+      "action": "add_person",
+      "person_id": "matyakubov_nurbek_rayimberganovich",
+      "fio": "Matyakubov Nurbek Rayimberganovich",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:16:03",
+      "action": "add_person",
+      "person_id": "yusupov_davronbek_firnafasovich",
+      "fio": "Yusupov Davronbek Firnafasovich",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:16:47",
+      "action": "add_person",
+      "person_id": "ismoilov_shukurulloh_habibulloyevich",
+      "fio": "Ismoilov Shukurulloh Habibulloyevich",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:17:19",
+      "action": "add_person",
+      "person_id": "matsapayev_gayratbek_jumanyazovich",
+      "fio": "Matsapayev G‘ayratbek Jumanyazovich",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:18:05",
+      "action": "add_person",
+      "person_id": "matnazarov_anvar_rustamovich",
+      "fio": "Matnazarov Anvar Rustamovich",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T10:25:43",
+      "action": "add_person",
+      "person_id": "zaripboyev_ollabergan_zokirbek_ogli",
+      "fio": "Zaripboyev Ollabergan Zokirbek o'g'li",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T11:19:30",
+      "action": "add_person",
+      "person_id": "ikromov_seymonbek",
+      "fio": "Ikromov Seymonbek",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T11:31:36",
+      "action": "add_person",
+      "person_id": "zaripboyev_ollabergan",
+      "fio": "Zaripboyev Ollabergan",
+      "files_added": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg",
+        "08.jpg",
+        "09.jpg",
+        "10.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T11:34:22",
+      "action": "add_person",
+      "person_id": "ganijonova_nafisa",
+      "fio": "G'anijonova Nafisa",
+      "files_added": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg",
+        "08.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-25T11:37:06",
+      "action": "add_photos",
+      "person_id": "ikromov_seymonbek",
+      "fio": "Ikromov Seymonbek",
+      "files_added": [
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-31T11:43:00",
+      "action": "add_person",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-31T11:43:01",
+      "action": "skip_duplicate_photo",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [],
+      "files_skipped": [
+        "photo_a.jpg"
+      ]
+    },
+    {
+      "timestamp": "2026-05-31T11:43:01",
+      "action": "skip_duplicate_photo",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [],
+      "files_skipped": [
+        "photo_b.jpg"
+      ]
+    },
+    {
+      "timestamp": "2026-05-31T11:43:01",
+      "action": "add_person",
+      "person_id": "another_person",
+      "fio": "Another Person",
+      "files_added": [
+        "01.jpg"
+      ],
+      "files_skipped": []
+    },
+    {
+      "timestamp": "2026-05-31T11:43:14",
+      "action": "skip_duplicate_photo",
+      "person_id": "test_person",
+      "fio": "Test Person",
+      "files_added": [],
+      "files_skipped": [
+        "photo_a.jpg"
+      ]
+    }
+  ]
+}

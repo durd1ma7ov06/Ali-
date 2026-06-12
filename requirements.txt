@@ -1,0 +1,27 @@
+edge-tts
+numpy
+# Face recognition (InsightFace + ArcFace embeddings).
+# These are required for the production-grade recognizer; if either is
+# missing the system automatically falls back to LBPH/histogram.
+insightface
+onnxruntime
+# OpenCV: opencv-contrib-python provides the legacy LBPH fallback.
+# If you only need the InsightFace pipeline you can use plain opencv-python,
+# but contrib is safe and recommended.
+opencv-contrib-python
+openai
+Pillow
+PyAudio
+pygame-ce
+pyserial
+SpeechRecognition
+# University knowledge crawler (Stage 1 of UNIVERSITY_KNOWLEDGE_PLAN.md)
+requests
+beautifulsoup4
+PyYAML
+# University knowledge indexer (Stage 2 of UNIVERSITY_KNOWLEDGE_PLAN.md).
+# scikit-learn is the always-available TF-IDF backend; sentence-transformers
+# is the preferred multilingual embedding backend (auto-fallback to TF-IDF
+# if it cannot be loaded at runtime).
+scikit-learn
+sentence-transformers
