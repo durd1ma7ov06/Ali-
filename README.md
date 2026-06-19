@@ -1,6 +1,19 @@
-# Humanoid Robot Voice Assistant
+# 🤖 Ali — Humanoid Robot Voice Assistant
 
-Uzbek tilida gaplashuvchi ovozli yordamchi loyiha. Dastur mikrofon orqali gapni eshitadi, OpenRouter orqali modeldan javob oladi va `edge-tts` yordamida ovoz chiqaradi.
+[![CI](https://github.com/durd1ma7ov06/Ali-/actions/workflows/ci.yml/badge.svg)](https://github.com/durd1ma7ov06/Ali-/actions/workflows/ci.yml)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+Uzbek tilida gaplashuvchi, yuzni taniy oladigan va harakatlanadigan AI robot. Dastur mikrofon orqali gapni eshitadi, OpenRouter orqali modeldan javob oladi va `edge-tts` yordamida ovoz chiqaradi.
+
+## ✨ Xususiyatlari
+- 🗣️ O'zbek tilida gaplashish (Speech-to-Text + Text-to-Speech)
+- 👁️ Yuzni aniqlash va tanish (InsightFace)
+- 🦾 ESP32 orqali servo motorlarni boshqarish (qo'l, bosh harakatlari)
+- 🧠 RAG asosida bilim bazasi (Amir Temur tarixi)
+- 🎯 AI yordamida harakat rejalashtirish
+- 📊 Dashboard server (monitoring)
 
 ## Asosiy fayllar
 - `main.py` - Windows uchun asosiy ishga tushirish fayli.
