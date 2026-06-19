@@ -207,6 +207,52 @@ class AIError(RuntimeError):
     """Raised when every candidate model fails."""
 
 
+def call_ollama_fallback(messages: list[dict], response_format: dict | None = None) -> str | None:
+    """
+    Attempts to call a local Ollama instance (defaulting to http://localhost:11434/v1)
+    using the model specified in OLLAMA_FALLBACK_MODEL (defaulting to llama3.2).
+    Returns the string text if successful, else None.
+    """
+    from openai import OpenAI
+    ollama_url = os.environ.get("OLLAMA_FALLBACK_URL", "http://localhost:11434/v1").strip()
+    ollama_model = os.environ.get("OLLAMA_FALLBACK_MODEL", "llama3.2").strip()
+    try:
+        print(f"[OLLAMA] Attempting local fallback on {ollama_url} with model {ollama_model}...")
+        client = OpenAI(base_url=ollama_url, api_key="ollama")
+        kwargs = {
+            "model": ollama_model,
+            "messages": messages,
+            "timeout": float(os.environ.get("OLLAMA_TIMEOUT", "6.0")),
+        }
+        if response_format:
+            kwargs["response_format"] = response_format
+        
+        resp = client.chat.completions.create(**kwargs)
+        text = (resp.choices[0].message.content or "").strip()
+        if text:
+            print(f"[OLLAMA] Local fallback response successful: {text[:60]}...")
+            return text
+    except Exception as exc:
+        print(f"[OLLAMA] Local fallback failed: {exc}")
+        if response_format:
+            try:
+                print("[OLLAMA] Retrying local fallback without response_format...")
+                client = OpenAI(base_url=ollama_url, api_key="ollama")
+                kwargs = {
+                    "model": ollama_model,
+                    "messages": messages,
+                    "timeout": float(os.environ.get("OLLAMA_TIMEOUT", "6.0")),
+                }
+                resp = client.chat.completions.create(**kwargs)
+                text = (resp.choices[0].message.content or "").strip()
+                if text:
+                    print(f"[OLLAMA] Local fallback retry response successful: {text[:60]}...")
+                    return text
+            except Exception as retry_exc:
+                print(f"[OLLAMA] Local fallback retry failed: {retry_exc}")
+    return None
+
+
 def call_with_timeout(
     messages: list[dict],
     *,
@@ -289,42 +335,59 @@ def chat_text(
     Try each model in `models` (or fallback_models() by default) until one
     returns a non-empty assistant text. Returns the text or raises AIError.
     """
-    if not has_api_key():
-        raise AIError("AI_API_KEY (or OPENROUTER_API_KEY) is not set in .env")
-
-    candidates = models or fallback_models()
-    if max_attempts is not None:
-        candidates = candidates[: max(1, int(max_attempts))]
-
     last_err: Exception | None = None
-    for m in candidates:
+    if has_api_key():
+        candidates = models or fallback_models()
+        if max_attempts is not None:
+            candidates = candidates[: max(1, int(max_attempts))]
+
+        for m in candidates:
+            try:
+                resp = call_with_timeout(
+                    messages,
+                    model=m,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    top_p=top_p,
+                    frequency_penalty=frequency_penalty,
+                    presence_penalty=presence_penalty,
+                    timeout=timeout,
+                    response_format=response_format,
+                )
+            except Exception as exc:
+                last_err = exc
+                print(f"[AI] Model {m} failed: {exc}")
+                continue
+            try:
+                text = (resp.choices[0].message.content or "").strip()
+            except Exception as exc:
+                last_err = exc
+                print(f"[AI] Model {m} returned malformed response: {exc}")
+                continue
+            if text:
+                try:
+                    import dashboard_server
+                    dashboard_server.update_status(online=True, provider="OpenRouter", model=m)
+                except ImportError:
+                    pass
+                return text
+
+    # Fall back to local Ollama if online calls failed or key is missing
+    ollama_text = call_ollama_fallback(messages, response_format=response_format)
+    if ollama_text:
         try:
-            resp = call_with_timeout(
-                messages,
-                model=m,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                top_p=top_p,
-                frequency_penalty=frequency_penalty,
-                presence_penalty=presence_penalty,
-                timeout=timeout,
-                response_format=response_format,
+            import dashboard_server
+            dashboard_server.update_status(
+                online=False,
+                provider="Ollama",
+                model=os.environ.get("OLLAMA_FALLBACK_MODEL", "llama3.2").strip()
             )
-        except Exception as exc:
-            last_err = exc
-            print(f"[AI] Model {m} failed: {exc}")
-            continue
-        try:
-            text = (resp.choices[0].message.content or "").strip()
-        except Exception as exc:
-            last_err = exc
-            print(f"[AI] Model {m} returned malformed response: {exc}")
-            continue
-        if text:
-            return text
+        except ImportError:
+            pass
+        return ollama_text
 
     raise AIError(
-        f"All {len(candidates)} model(s) failed. Last error: {last_err}"
+        f"All model(s) and local Ollama fallback failed. Last error: {last_err}"
     )
 
 

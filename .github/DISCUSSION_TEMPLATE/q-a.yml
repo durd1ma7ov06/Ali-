@@ -1,0 +1,21 @@
+title: "[Savol] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Savolingizni bu yerda bering. Jamoamiz va hamjamiyat sizga yordam beradi!
+  - type: textarea
+    id: question
+    attributes:
+      label: Savol
+      description: Savolingizni batafsil yozing
+      placeholder: Masalan - ESP32 ni qanday ulashim mumkin?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Qo'shimcha ma'lumot
+      description: Kontekst, screenshot yoki kod
+      placeholder: Ixtiyoriy

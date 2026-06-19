@@ -36,12 +36,21 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# # Face dataset (local data, not for version control)
-# face_data/
-# faces.db
+# Face dataset (local data, not for version control)
+face_data/faces.sqlite
+face_data/photos/
 
-# # University knowledge — local crawl artefacts (sources.yaml is tracked)
-# university_knowledge/raw_pages.jsonl
-# university_knowledge/knowledge.sqlite
-# university_knowledge/vector_index/
-# university_knowledge/chunks.jsonl
+# Knowledge base — local crawl artefacts (sources.yaml is tracked)
+amir_temur_knowledge/knowledge.sqlite
+amir_temur_knowledge/raw_pages.jsonl
+amir_temur_knowledge/chunks.jsonl
+amir_temur_knowledge/vector_index/
+
+# Large model/3D files
+3D/*.glb
+*.npy
+*.onnx
+*.pkl
+
+# Scratch/temp
+scratch/

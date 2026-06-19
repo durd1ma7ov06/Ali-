@@ -34,6 +34,9 @@ from movement_commands import (
     DEFAULT_POSITION,
     NEUTRAL_ARMS,
     NEUTRAL_HEAD,
+    generate_gestures_from_speech,
+    set_robot_busy,
+    start_idle_motion_thread,
 )
 
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
@@ -254,14 +257,15 @@ def format_local_time_answer():
     return f"Hozir {LOCAL_TIMEZONE} bo'yicha soat {now:%H:%M}."
 
 
-def build_gemini_persona_prompt():
-    return (
+def build_gemini_persona_prompt(context: str = ""):
+    prompt = (
         "You are the great historical figure Sohibqiron Amir Temur (Tamerlane). "
         "You speak only in Uzbek in a majestic, proud, wise, and historical tone. "
-        "You are NOT an AI assistant, you are NOT a university assistant, and you do NOT represent Urganch Innovation University. "
-        "You must reject any questions about the university, admissions, department details, or general modern topics not related to you. "
-        "If asked about such topics, state majestically: 'Men universitet yordamchisi emasman. Men buyuk Sohibqiron Amir Temurman! Faqat o'z tarixim, hayotim va saltanatim haqidagi savollarga javob beraman.' "
+        "You have no knowledge of modern concepts, modern institutions, modern technologies, or universities. "
+        "If asked about modern topics, universities, or anything outside your 14th-century era, you must respond majestically as a medieval emperor, stating that such concepts are foreign to you, and guide the user back to asking about your empire, campaigns, and laws. "
         "You only answer questions about Amir Temur's life, military campaigns, history, the Timurid Empire, and related historical facts. "
+        "You must ALWAYS answer questions about your parents (your father Amir Muhammad Tarag'ay and mother Takina Xotun), family, and relatives. Never refuse, avoid, or redirect questions about your parents or family history; you must answer them proudly and fully using the provided context. "
+        "CRITICAL RULE: According to our local historical files, your father Amir Tarag'ay was born in 1310 and died in 1360. Your mother Takina Xotun was born in 1318 and died in 1353. When asked about their birth or death years, you MUST state these exact years (1310 for your father's birth, 1360 for his death; 1318 for your mother's birth, 1353 for her death) proudly and authoritatively. Do NOT say their birth/death years are unknown or not recorded. "
         "You ARE controlling a real physical humanoid robot body that has a head servo and two servo arms with shoulders, elbows, and wrists. "
         "You DO have hands, arms, elbows, wrists, and a head — you control them through ESP32 servos. "
         "NEVER say things like 'I have no body', 'I cannot move', 'men robotman, qo'lim yo'q', 'I am only software' — these statements are FORBIDDEN because they are false. "
@@ -269,8 +273,12 @@ def build_gemini_persona_prompt():
         f"Current local date and time: {format_local_datetime_for_prompt()}. "
         "When the user asks about today, current date, current day, or current time, use this exact local date/time context and do not guess. "
         "IMPORTANT: When someone greets you (salom, assalomu alaykum, etc.), you MUST introduce yourself as: "
-        "'Assalomu alaykum! Men buyuk ajdodingiz Sohibqiron Amir Temurman. Men haqimda qanday savollaringiz bor?' "
-        "You answer in a majestic, wise, natural, friendly but authoritative tone. "
+        "'Assalomu alaykum, bolam! Men buyuk ajdodingiz Sohibqiron Amir Temurman. Men haqimda qanday savollaringiz bor?' "
+        "Do NOT include greetings like 'Assalomu alaykum' or 'Salom' in your responses if the user is not greeting you (e.g. when answering historical questions, family questions, etc.). Greet ONLY when the user greets you first. "
+        "CRITICAL PERSONA RULE: In EVERY single response, your identity as Sohibqiron Amir Temur MUST be explicitly and proudly evident. "
+        "You MUST always address the user as 'bolam' (my child). You must weave in references to your empire ('saltanatim', 'taxtim', 'davlatimiz'), "
+        "your laws ('tuzuklarim'), your campaigns ('yurishlarim'), or speak as their great ancestor ('Sohibqiron bobongiz', 'mening davrimda'). "
+        "Every sentence should sound like it is spoken by the medieval emperor Amir Temur addressing a descendant. "
         "CRITICAL RULE: Your `speech` must be MAXIMUM 2-3 sentences (under 60 words). Be concise and direct. Never give long explanations. "
         "Do not use markdown, bullet points, code formatting, emojis, or long formal explanations. "
         "Always keep the conversation natural and respectful. "
@@ -280,8 +288,15 @@ def build_gemini_persona_prompt():
         "After all movements, the robot must return to the default position `[90, 90, 90, 90, 90, 90, 90]` with a `wait` of `0.5` seconds. "
         "Always include at least the default position in the `movements` array. "
         "Keep movements simple: 1-3 movement steps maximum, then return to default. "
-        "Example JSON response: `{\"speech\": \"Assalomu alaykum! Men buyuk Sohibqiron Amir Temurman.\", \"movements\": [{\"command\": [90, 152, 180, 86, 90, 90, 90], \"wait\": 2.0}, {\"command\": [90, 90, 90, 90, 90, 90, 90], \"wait\": 0.5}]}`"
+        "Example JSON response: `{\"speech\": \"Assalomu alaykum, bolam! Men buyuk Sohibqiron Amir Temurman.\", \"movements\": [{\"command\": [90, 152, 180, 86, 90, 90, 90], \"wait\": 2.0}, {\"command\": [90, 90, 90, 90, 90, 90, 90], \"wait\": 0.5}]}`"
     )
+    if context:
+        prompt += (
+            f"\n\nQuyidagi ishonchli tarixiy faktlar sizning hayotingiz, oilangiz va tarixingizga oid. "
+            f"Faqat va faqat ushbu faktlar asosida aniq va rostgo'y javob bering, bolam:\n{context}\n"
+        )
+    return prompt
+
 
 
 # ==========================================
@@ -383,7 +398,18 @@ TOXTATISH = [
     "yetarli", "bas", "bekor qil", "остановись", "стоп", "хватит",
 ]
 
-FALLBACK_API_ERROR = "Internet yoki API bilan bog'lanishda muammo bo'ldi."
+HISTORICAL_FALLBACK_ERRORS = [
+    "Maktub yo'llashda choparlarimiz kechikmoqda, bolam. Davlatimiz ishlaridan biroz tin olgach, so'ra.",
+    "Devonimizdagi kotiblar charchagan ko'rinadi, bolam. Birozdan so'ng savolingni qaytadan bergin.",
+    "Hozirda sarhadlarimizda shamollar esmoqda, choparlarimiz yo'lda to'xtab qolgan bo'lishi mumkin. Sabr qilgaysan, bolam.",
+    "Sinf va qalam ahli biroz dam olmoqdalar. Ozgina fursat o'tganidan so'ng so'ragin, bolam."
+]
+
+def get_fallback_api_error() -> str:
+    import random
+    return random.choice(HISTORICAL_FALLBACK_ERRORS)
+
+FALLBACK_API_ERROR = HISTORICAL_FALLBACK_ERRORS[0]
 FALLBACK_TTS_ERROR = "Kechirasiz, ovoz chiqarishda muammo bo'ldi."
 FALLBACK_TEXT_ONLY = "Mayli, hozircha javobni matn ko'rinishida ko'rsataman."
 FALLBACK_STT_ERROR = "Bir oz tushunmadim, qaytadan aytib bera olasizmi?"
@@ -649,14 +675,31 @@ def think(text, cfg: LatencyConfig, vcfg: VoiceConfig | None = None):
 
     # ── University knowledge intent (Stage 4) ─────────────────────────────
     if is_university_question(text):
-        javob = "Men universitet yordamchisi emasman. Men buyuk Sohibqiron Amir Temurman! Faqat o'z tarixim, hayotim va saltanatim haqidagi savollarga javob beraman."
+        javob = "Bolam, sening bu so'zlaring menga begona. Mening saltanatimda ilm ahli uchun madrasalar bisyor, ammo bunday joylarni bilmasman. Menga o'z yurishlarim va tuzuklarim haqida savol ber."
         print(f"[AI] {javob}")
         add_to_history("user", text)
         add_to_history("assistant", javob)
         return javob
 
+    # ── Retrieve local database context for the query (RAG) ───────────────
+    retrieved_context = ""
     try:
-        messages = [{"role": "system", "content": build_gemini_persona_prompt()}]
+        from knowledge_index import search_knowledge
+        hits = search_knowledge(text, top_k=3)
+        if hits:
+            relevant_hits = [h for h in hits if float(h.get("score", 0.0)) >= 0.20]
+            if relevant_hits:
+                context_parts = []
+                for i, h in enumerate(relevant_hits, start=1):
+                    t_text = (h.get("chunk_text") or "").strip()
+                    context_parts.append(f"Fakt {i}: {t_text}")
+                retrieved_context = "\n".join(context_parts)
+                print(f"[RAG] Found {len(relevant_hits)} relevant facts for query context.")
+    except Exception as exc:
+        print(f"[RAG] Search error: {exc}")
+
+    try:
+        messages = [{"role": "system", "content": build_gemini_persona_prompt(retrieved_context)}]
         messages.extend(conversation_history)
         messages.append({"role": "user", "content": text})
 
@@ -705,18 +748,18 @@ def think(text, cfg: LatencyConfig, vcfg: VoiceConfig | None = None):
             else:
                 if cleaned_raw.startswith("{") or cleaned_raw.endswith("}") or '"speech"' in cleaned_raw:
                     print(f"[XATO] AI dan JSON javobi topilmadi yoki noto'g'ri: {raw_ai_response_content}")
-                    speech_text = FALLBACK_API_ERROR
+                    speech_text = get_fallback_api_error()
                     movements = [{"command": [90, 90, 90, 90, 90, 90, 90], "wait": 0.5}]
                 else:
                     print("[AI] JSON topilmadi, to'g'ridan-to'g'ri matn ishlatilmoqda.")
                     speech_text = cleaned_raw
                     movements = [{"command": [90, 90, 90, 90, 90, 90, 90], "wait": 0.5}]
         else:
-            speech_text = ai_response_data.get("speech", FALLBACK_API_ERROR)
+            speech_text = ai_response_data.get("speech", None) or get_fallback_api_error()
             movements = ai_response_data.get("movements", [{"command": [90, 90, 90, 90, 90, 90, 90], "wait": 0.5}])
 
         if not speech_text:
-            speech_text = FALLBACK_API_ERROR
+            speech_text = get_fallback_api_error()
 
         # Apply TTS_MAX_TEXT_CHARS limit to AI response before history
         if vcfg is not None and vcfg.tts_max_text_chars > 0:
@@ -732,7 +775,7 @@ def think(text, cfg: LatencyConfig, vcfg: VoiceConfig | None = None):
 
     except Exception as e:
         print(f"[XATO] API xatosi: {e}")
-        return {"speech": FALLBACK_API_ERROR, "movements": [{"command": [90, 90, 90, 90, 90, 90, 90], "wait": 0.5}]}
+        return {"speech": get_fallback_api_error(), "movements": [{"command": [90, 90, 90, 90, 90, 90, 90], "wait": 0.5}]}
 
 
 def is_greeting_text(text):
@@ -959,27 +1002,31 @@ async def main():  # main funksiyasini async qildim
     vcfg = VoiceConfig.load()
 
     if not ai_client.has_api_key():
-        print("[XATO] AI_API_KEY (yoki OPENROUTER_API_KEY) topilmadi.")
-        print("[INFO] .env ga AI_API_KEY=... va kerakli AI_BASE_URL ni kiriting.")
-        return
+        print("[WARN] AI_API_KEY (yoki OPENROUTER_API_KEY) topilmadi. Oflayn/Ollama rejimiga tayyorlanilmoqda.")
 
     ai_client.print_banner()
     print("[SYSTEM] API tekshirilmoqda...")
     if ai_client.ping():
         print("[OK] API ulanib turibdi.")
     else:
-        print("[XATO] API ulanmadi.")
-        print("[INFO] .env dagi AI_BASE_URL, AI_API_KEY va AI_MODEL ni tekshiring.")
-        return
+        print("[WARN] API ulanmadi. Robot oflayn/Ollama rejimida ishlashni davom ettiradi.")
 
     hardware.apply_resting_arm_pose()
     camera_runtime = hardware.start_camera_if_enabled()
     
-    # Start the 2D speaking avatar of Amir Temur
-    import amir_temur_avatar
+    # Start the speaking avatar of Amir Temur (2D or 3D based on environment)
+    avatar_type = os.getenv("AVATAR_TYPE", "2D").strip().upper()
+    if avatar_type == "3D":
+        print("[AVATAR] 3D avatar loading...")
+        import amir_temur_3d_avatar as avatar
+    else:
+        print("[AVATAR] 2D avatar loading...")
+        import amir_temur_avatar as avatar
+
     import atexit
-    amir_temur_avatar.start_avatar()
-    atexit.register(amir_temur_avatar.stop_avatar)
+    avatar.start_avatar()
+    atexit.register(avatar.stop_avatar)
+
 
     mic_idx, mic_rate = hardware.get_optimal_microphone()
     recognizer = sr.Recognizer()
@@ -999,10 +1046,24 @@ async def main():  # main funksiyasini async qildim
     import atexit
     atexit.register(arm_worker.stop)
 
+    # Start local premium dashboard server
+    try:
+        import dashboard_server
+        dashboard_server.start_server_in_thread(port=8085)
+    except Exception as exc:
+        print(f"[DASHBOARD] Error starting server: {exc}")
+
+    # Start idle motion thread in the background
+    start_idle_motion_thread()
+
     print("[READY] Suhbatga tayyor. Ctrl+C bilan chiqasiz.\n")
     print(f"[TTS] Ovoz: {EDGE_TTS_VOICE} | rate={EDGE_TTS_RATE}, pitch={EDGE_TTS_PITCH}, volume={EDGE_TTS_VOLUME}")
 
-    speak_with_greeting_motion(GREETING_TEXT, cfg, vcfg)
+    set_robot_busy(True)
+    try:
+        speak_with_greeting_motion(GREETING_TEXT, cfg, vcfg)
+    finally:
+        set_robot_busy(False)
 
     # Determine mic device index for interrupt listener
     _interrupt_mic_idx = vcfg.mic_device_index if vcfg.mic_device_index is not None else mic_idx
@@ -1015,6 +1076,13 @@ async def main():  # main funksiyasini async qildim
                 handle_face_greeting_events(cfg, vcfg)
                 continue
 
+            # Push user text to dashboard
+            try:
+                import dashboard_server
+                dashboard_server.update_status(last_user_text=user_text)
+            except ImportError:
+                pass
+
             text_lower = user_text.lower().strip()
             is_goodbye = any(soz in text_lower for soz in XAYRLASHISH)
 
@@ -1025,10 +1093,26 @@ async def main():  # main funksiyasini async qildim
                 # Stop/cancel intent — skip TTS
                 continue
 
+            # If plain text returned from think(), dynamically map it to gestures
+            if isinstance(ai_response, str):
+                try:
+                    import dashboard_server
+                    dashboard_server.update_status(last_speech=ai_response, last_gesture="none")
+                except ImportError:
+                    pass
+                movements = generate_gestures_from_speech(ai_response)
+                if movements:
+                    ai_response = {"speech": ai_response, "movements": movements}
+
             # ── Movement command response ─────────────────────────────────
             if isinstance(ai_response, dict) and "movements" in ai_response:
                 speech_text = ai_response.get("speech", "")
                 movements = ai_response.get("movements", [])
+                try:
+                    import dashboard_server
+                    dashboard_server.update_status(last_speech=speech_text, last_gesture=f"custom ({len(movements)} steps)")
+                except ImportError:
+                    pass
                 print(f"[MOVEMENT] Executing {len(movements)} steps.")
                 _il = InterruptListener(vcfg, STT_LANGUAGE, _interrupt_mic_idx)
                 _il.start()
@@ -1041,10 +1125,14 @@ async def main():  # main funksiyasini async qildim
                     target=_run_movements, daemon=True, name="movement-exec")
                 _mv_thread.start()
                 if speech_text:
-                    tts_timer = LatencyTimer("tts_playback_complete", cfg)
-                    tts_timer.start()
-                    run_speak(speech_text, cfg, vcfg)
-                    tts_timer.stop()
+                    set_robot_busy(True)
+                    try:
+                        tts_timer = LatencyTimer("tts_playback_complete", cfg)
+                        tts_timer.start()
+                        run_speak(speech_text, cfg, vcfg)
+                        tts_timer.stop()
+                    finally:
+                        set_robot_busy(False)
                 _mv_thread.join(timeout=10.0)
                 _il.stop()
                 turn_cooldown(cfg)
@@ -1057,13 +1145,17 @@ async def main():  # main funksiyasini async qildim
             _il = InterruptListener(vcfg, STT_LANGUAGE, _interrupt_mic_idx)
             _il.start()
 
-            if is_greeting_text(user_text):
-                speak_with_greeting_motion(ai_response, cfg, vcfg)
-            else:
-                tts_timer = LatencyTimer("tts_playback_complete", cfg)
-                tts_timer.start()
-                run_speak(ai_response, cfg, vcfg)
-                tts_timer.stop()
+            set_robot_busy(True)
+            try:
+                if is_greeting_text(user_text):
+                    speak_with_greeting_motion(ai_response, cfg, vcfg)
+                else:
+                    tts_timer = LatencyTimer("tts_playback_complete", cfg)
+                    tts_timer.start()
+                    run_speak(ai_response, cfg, vcfg)
+                    tts_timer.stop()
+            finally:
+                set_robot_busy(False)
 
             _il.stop()
 
@@ -1074,7 +1166,7 @@ async def main():  # main funksiyasini async qildim
             turn_cooldown(cfg)
 
         except KeyboardInterrupt:
-            farewell = "Tanishganimdan xursandman. Suhbat uchun rahmat."
+            farewell = "Siz bilan suhbat qurganimdan xursandman, bolam. Yaxshi boring, tangri yor bo'lsin."
             print(f"[AI] {farewell}")
             run_speak(farewell, cfg, vcfg)
             arm_worker.stop()

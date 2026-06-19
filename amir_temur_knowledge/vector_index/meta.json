@@ -1,7 +1,0 @@
-{
-  "backend": "embedding",
-  "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-  "n_vectors": 30,
-  "dim": 384,
-  "built_at": "2026-06-12T19:09:11+00:00"
-}

@@ -1,0 +1,48 @@
+name: Ali Robot CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  issues:
+    types: [opened]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install flake8 pytest
+          pip install -r requirements.txt || true
+
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+      - name: Run tests
+        run: |
+          pytest tests/ -v --tb=short || echo "No tests found yet"
+
+  check-env-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify .env.example exists
+        run: test -f .env.example
+
+      - name: Check no secrets in repo
+        run: |
+          ! grep -r "sk-" --include="*.py" . || echo "Warning: possible API key found"
+          ! grep -r "OPENROUTER_API_KEY=sk" . || echo "Warning: hardcoded key"

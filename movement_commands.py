@@ -32,6 +32,7 @@ from __future__ import annotations
 import os
 import re
 import sys
+import threading
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -1179,6 +1180,67 @@ def get_ai_planner_prompt() -> str:
     return _AI_PLANNER_PROMPT
 
 
+def generate_gestures_from_speech(speech_text: str) -> list[dict]:
+    """
+    Analyzes the speech_text and returns a list of movement steps (dict).
+    If no keywords match, returns an empty list.
+    """
+    if not speech_text or not isinstance(speech_text, str):
+        return []
+    
+    t = speech_text.lower()
+    
+    # 1. Greetings (Salomlashish)
+    if any(kw in t for kw in ["salom", "assalom", "sog'liq", "omon", "hush kelibsiz"]):
+        return validate_movements(_seq_wave_right())
+        
+    # 2. Heart/Me/Chest (Yurak/Men/Ko'ks)
+    if any(kw in t for kw in ["men", "yurak", "ko'ks", "ko'krak", "qalb", "mening", "nomim"]):
+        return validate_movements(_seq_chest_left())
+        
+    # 3. Strength/Justice/Sword/Kingdom (Kuch/Adolat/Qilich/Saltanat)
+    if any(kw in t for kw in ["kuch", "adolat", "qilich", "saltanat", "davlat", "hokimiyat", "g'alaba", "jang", "askar", "zafar"]):
+        return validate_movements(_seq_raise_right())
+        
+    # 4. Council/Decrees/Wills (Kengash/Tadbir/Tuzuklar/Vasiyat)
+    if any(kw in t for kw in ["kengash", "tadbir", "maslahat", "tuzuk", "tuzuklar", "vasiyat", "kitob", "yozma"]):
+        return validate_movements(_seq_chest_both())
+        
+    # 5. Head/Thought/Reason (Bosh/Fikr/Aql)
+    if any(kw in t for kw in ["bosh", "boshim", "fikr", "o'y", "teran", "aqlim", "aql"]):
+        return validate_movements([
+            _step(110, NEUTRAL_ARMS, 0.4),
+            _step(70, NEUTRAL_ARMS, 0.4),
+            _neutral(0.4)
+        ])
+        
+    # 6. Left side
+    if "chap" in t:
+        return validate_movements(_seq_raise_left())
+        
+    # 7. Right side
+    if "o'ng" in t:
+        return validate_movements(_seq_raise_right())
+        
+    # 8. Both sides
+    if any(kw in t for kw in ["ikkala", "ikki"]):
+        return validate_movements(_seq_raise_both())
+        
+    return []
+
+
+_robot_busy_lock = threading.Lock()
+_is_robot_busy = False
+
+def set_robot_busy(busy: bool):
+    global _is_robot_busy
+    with _robot_busy_lock:
+        _is_robot_busy = busy
+
+def is_robot_busy() -> bool:
+    global _is_robot_busy
+    with _robot_busy_lock:
+        return _is_robot_busy
 
 
 def execute_movement_steps(steps: list[dict], controller) -> None:
@@ -1189,18 +1251,111 @@ def execute_movement_steps(steps: list[dict], controller) -> None:
         steps: list of validated step dicts from validate_movements()
         controller: Esp32SerialController instance (or None for dry-run)
     """
-    import time as _t
-    for step in steps:
-        head = step.get("head", NEUTRAL_HEAD)
-        arms = step.get("arms", NEUTRAL_ARMS)
-        wait = step.get("wait", _WAIT_DEFAULT)
-        if controller is not None:
-            try:
-                controller.send_head_angle(head)
-                controller.send_arm_offsets(*arms)
-            except Exception as exc:
-                print(f"[MOVEMENT] Serial error: {exc}")
-        _t.sleep(wait)
+    set_robot_busy(True)
+    try:
+        import time as _t
+        for step in steps:
+            head = step.get("head", NEUTRAL_HEAD)
+            arms = step.get("arms", NEUTRAL_ARMS)
+            wait = step.get("wait", _WAIT_DEFAULT)
+            if controller is not None:
+                try:
+                    controller.send_head_angle(head)
+                    controller.send_arm_offsets(*arms)
+                    # Push to dashboard
+                    try:
+                        import dashboard_server
+                        dashboard_server.update_status(head_angle=head, arms_offsets=list(arms))
+                    except ImportError:
+                        pass
+                except Exception as exc:
+                    print(f"[MOVEMENT] Serial error: {exc}")
+            _t.sleep(wait)
+    finally:
+        set_robot_busy(False)
+
+
+def idle_motion_loop():
+    """
+    Background loop that runs gentle movements (head swaying and shoulder breathing)
+    when the robot is not busy speaking or performing a specific gesture.
+    """
+    import random
+    import time
+    from robot_hardware import get_esp32_controller, get_resting_arm_offsets
+    
+    # Wait a bit after startup
+    time.sleep(5.0)
+    
+    last_head = 90
+    last_shoulder = 0
+    
+    while True:
+        try:
+            time.sleep(random.uniform(5.0, 9.0))
+            if is_robot_busy():
+                continue
+                
+            controller = get_esp32_controller()
+            if not controller:
+                continue
+                
+            rest = get_resting_arm_offsets()
+            
+            # Choose a new target
+            target_head = random.choice([87, 88, 89, 90, 91, 92, 93])
+            target_shoulder = random.choice([0, 1, 2, 3])
+            
+            # Interpolate slowly to the target to make it extremely smooth and life-like
+            steps = 15
+            for i in range(1, steps + 1):
+                if is_robot_busy():
+                    break
+                ratio = i / steps
+                current_head = int(round(last_head + (target_head - last_head) * ratio))
+                current_shoulder = int(round(last_shoulder + (target_shoulder - last_shoulder) * ratio))
+                
+                # Send to ESP32
+                if controller.connect():
+                    controller.send_head_angle(current_head)
+                    controller.send_arm_offsets(
+                        rest[0] + current_shoulder,
+                        rest[1],
+                        rest[2],
+                        rest[3] + current_shoulder,
+                        rest[4],
+                        rest[5]
+                    )
+                    # Push to dashboard
+                    try:
+                        import dashboard_server
+                        dashboard_server.update_status(
+                            head_angle=current_head,
+                            arms_offsets=[
+                                rest[0] + current_shoulder,
+                                rest[1],
+                                rest[2],
+                                rest[3] + current_shoulder,
+                                rest[4],
+                                rest[5]
+                            ]
+                        )
+                    except ImportError:
+                        pass
+                time.sleep(0.12)
+                
+            if not is_robot_busy():
+                last_head = target_head
+                last_shoulder = target_shoulder
+                
+        except Exception:
+            time.sleep(3.0)
+
+
+def start_idle_motion_thread():
+    t = threading.Thread(target=idle_motion_loop, name="idle-motion", daemon=True)
+    t.start()
+    print("[MOVEMENT] Idle motion thread started successfully.")
 
 
 # ---------------------------------------------------------------------------
