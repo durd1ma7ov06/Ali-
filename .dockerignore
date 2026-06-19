@@ -1,0 +1,16 @@
+.git
+.venv
+venv
+venv312
+__pycache__
+*.pyc
+.env
+face_data/photos/
+face_data/faces.sqlite
+amir_temur_knowledge/knowledge.sqlite
+amir_temur_knowledge/vector_index/
+3D/
+scratch/
+build/
+dist/
+.pytest_cache/
