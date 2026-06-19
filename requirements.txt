@@ -1,27 +1,33 @@
-edge-tts
-numpy
-# Face recognition (InsightFace + ArcFace embeddings).
-# These are required for the production-grade recognizer; if either is
-# missing the system automatically falls back to LBPH/histogram.
-insightface
-onnxruntime
-# OpenCV: opencv-contrib-python provides the legacy LBPH fallback.
-# If you only need the InsightFace pipeline you can use plain opencv-python,
-# but contrib is safe and recommended.
-opencv-contrib-python
-openai
-Pillow
-PyAudio
-pygame-ce
-pyserial
-SpeechRecognition
-# University knowledge crawler (Stage 1 of UNIVERSITY_KNOWLEDGE_PLAN.md)
-requests
-beautifulsoup4
-PyYAML
-# University knowledge indexer (Stage 2 of UNIVERSITY_KNOWLEDGE_PLAN.md).
-# scikit-learn is the always-available TF-IDF backend; sentence-transformers
-# is the preferred multilingual embedding backend (auto-fallback to TF-IDF
-# if it cannot be loaded at runtime).
-scikit-learn
-sentence-transformers
+# Ali Robot - Python dependencies
+# Install: pip install -r requirements.txt
+
+# AI & LLM
+openai>=1.0.0
+httpx>=0.25.0
+
+# Text-to-Speech
+edge-tts>=6.1.0
+
+# Speech-to-Text
+SpeechRecognition>=3.10.0
+PyAudio>=0.2.13
+
+# Face Recognition
+insightface>=0.7.3
+onnxruntime>=1.16.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# ESP32 Serial Communication
+pyserial>=3.5
+
+# Knowledge Base (RAG)
+sentence-transformers>=2.2.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0
+
+# Testing
+pytest>=7.4.0
+flake8>=6.1.0
